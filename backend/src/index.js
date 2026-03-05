@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 
-import { PORT } from './config/serverConfig.js'
+import { PORT } from './config/serverConfig.js';
+import apiRouter from './routes/index.js';
 
 const app = express();
 
@@ -10,6 +11,8 @@ app.use(express.urlencoded( { extended: true }));
 app.use(express.text());
 
 app.use(cors());
+
+app.use('/api', apiRouter);
 
 app.get('/home', (req, res) => {
     return (
