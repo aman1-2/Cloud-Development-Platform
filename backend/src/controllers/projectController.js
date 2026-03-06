@@ -1,8 +1,9 @@
 import util from 'util';
 import fs from 'fs/promises';
 import child_process from 'child_process'; 
-
 import { v4 as uuid4} from 'uuid';
+
+import { REACT_PROJECT_COMMAND } from '../config/serverConfig.js';
 
 const execPromisified = util.promisify(child_process.exec);
 
@@ -21,7 +22,7 @@ export const createProjectController = async (req, res) => {
     await fs.mkdir(`./projects/${projectId}`);
 
     //After this call the npm create-vite command in the newly created project folder.
-    const response = await execPromisified('npm create vite@latest code -- --template react', {
+    const response = await execPromisified(REACT_PROJECT_COMMAND, {
         cwd: `./projects/${projectId}`
     });
 
