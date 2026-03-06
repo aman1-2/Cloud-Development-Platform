@@ -1,34 +1,14 @@
-import { useState } from 'react';
-import './App.css'
-import { PingComponent } from './components/atoms/pingComponent.jsx';
+import { Routes, Route } from 'react-router-dom';
 
-// import { pingApi } from './apis/ping.js';
-// import usePing from './hooks/apis/queries/usePing.jd';
+import './App.css'
+import { CreateProject } from './pages/CreateProject.jsx';
 
 function App() {
 
-  // useEffect(()=> {
-  //   pingApi();
-  // }, []);
-
-  // const { isLoading, data } = usePing();
-
-  // if(isLoading) {
-  //   return( 
-  //     <>
-  //     Loading.......</>
-
-  //   )
-  // }
-
-  const [isVisible, setIsVisible] = useState(false);
-
   return (
-    <>
-      <button onClick={() => setIsVisible(!isVisible)}> Toggle </button>
-      {isVisible && <PingComponent />}
-
-    </>
+    <Routes>
+      <Route path='/' element={<CreateProject />}></Route>
+    </Routes>
   );
 }
 
