@@ -34,7 +34,7 @@ export const EditorComponent = () => {
                     height={'80vh'}
                     width={'100%'}
                     defaultLanguage='javascript'
-                    defaultValue='Welcome and Start Coding....'
+                    defaultValue='//Welcome and Start Coding....'
                     options={{
                         fontSize: 18,
                         fontFamily: 'monospace'
