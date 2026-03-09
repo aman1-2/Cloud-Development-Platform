@@ -4,11 +4,27 @@ import { IoIosArrowDown } from "react-icons/io";
 import { FileIcon } from "../../atoms/FileIcon/FileIcon";
 
 import { useEditorSocketStore } from "../../../store/editorSocketStore";
+import { useFileContextMenuStore } from "../../../store/fileContextMenuStore";
+import { useFolderContextMenuStore } from "../../../store/folderContextMenuStore";
 
 export const TreeNode = ({ fileFolderData }) => {
     const [visibility, setVisibility] = useState({});
 
     const { editorSocket } = useEditorSocketStore();
+
+    const {
+        setFile,
+        setIsOpen: setFileContextMenuIsOpen,
+        setX: setFileContextMenuX,
+        setY: setFileContextMenuY
+    } = useFileContextMenuStore();
+
+    const {
+        setFolder,
+        setIsOpen: setFolderContextMenuIsOpen,
+        setX: setFolderContextMenuX,
+        setY: setFolderContextMenuY
+    } = useFolderContextMenuStore();
 
     function toggleVisibility(name) {
         setVisibility({
@@ -27,6 +43,24 @@ export const TreeNode = ({ fileFolderData }) => {
         editorSocket.emit("readFile", {
             pathToFileOrFolder: fileFolderData.path
         });
+    }
+
+    function handleContextMenuForFiles(e, path) {
+        e.preventDefault();
+        console.log("File Right Clicked path:", path); 
+        setFile(path);
+        setFileContextMenuX(e.clientX);
+        setFileContextMenuY(e.clientY);
+        setFileContextMenuIsOpen(true);
+    }
+
+    function handleContextMenuForFolders(e, path) {
+        e.preventDefault();
+        console.log("Folder Right Clicked path:", path); 
+        setFolder(path);
+        setFolderContextMenuX(e.clientX);
+        setFolderContextMenuY(e.clientY);
+        setFolderContextMenuIsOpen(true);
     }
 
     return(
@@ -50,8 +84,10 @@ export const TreeNode = ({ fileFolderData }) => {
                         color: "whitesmoke",
                         backgroundColor: "transparent",
                         paddingTop: "15px",
-                        fontSize: "16px"
-                    }}   
+                        fontSize: "16px",
+                    }}  
+                    
+                    onContextMenu={(e) => handleContextMenuForFolders(e, fileFolderData.path)}
                 >
                     {
                         visibility[fileFolderData.name] ? 
@@ -81,6 +117,8 @@ export const TreeNode = ({ fileFolderData }) => {
                                 marginLeft: "5px", 
                             }} 
                             
+                            onContextMenu={(e) => {handleContextMenuForFiles(e, fileFolderData.path)}}
+
                             onDoubleClick={() => handleDoubleClick(fileFolderData)}
                         >
                             {fileFolderData.name}
