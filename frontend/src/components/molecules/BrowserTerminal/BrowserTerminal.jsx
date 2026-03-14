@@ -3,20 +3,27 @@ import { FitAddon } from '@xterm/addon-fit';
 import'@xterm/xterm/css/xterm.css'; // required styles
 import { useEffect, useRef } from 'react';
 import { useParams } from "react-router-dom";
-import { io } from 'socket.io-client';
+// import { io } from 'socket.io-client';
+import { AttachAddon } from '@xterm/addon-attach';
+
+import { useTerminalSocketStore } from '../../../store/terminalSocketStore';
 
 export const BrowserTerminal = () => {
 
     const terminalRef = useRef(null);
-    const socket = useRef(null);
+    // const socket = useRef(null);
 
     const { projectId: projectIdFromUrl } = useParams();
+
+    // const ws = new WebSocket("ws://localhost:3000/terminal?projectId=" + projectIdFromUrl);
+
+    const { terminalSocket } = useTerminalSocketStore(); 
 
     useEffect(() => {
         const term = new Terminal({
             cursorBlink: true,
-            fontSize: 16,
-            fontFamily: "Ubuntu mono",
+            fontSize: 14,
+            fontFamily: "Fira Code",
             theme: {
                 background: "#282a37",
                 foreground: "#f8f8f3",
@@ -35,26 +42,35 @@ export const BrowserTerminal = () => {
         term.loadAddon(fitAddon);
         fitAddon.fit();
 
-        socket.current = io(`${import.meta.env.VITE_BACKEND_URL}/terminal`, {
-            query: {
-                projectId: projectIdFromUrl
-            },
-        });
+        // socket.current = io(`${import.meta.env.VITE_BACKEND_URL}/terminal`, {
+        //     query: {
+        //         projectId: projectIdFromUrl
+        //     },
+        // });
 
-        socket.current.on("shell-output", (data) => {
-            term.write(data);
-        });
+        if(terminalSocket) {
+            terminalSocket.onopen = () => {
+                const attachAddon = new AttachAddon(terminalSocket);
+                term.loadAddon(attachAddon); 
+                // socket.current = ws;
+            }
+        }
+        
 
-        term.onData((data) => {
-            console.log(data);
-            socket.current.emit("shell-input", data)
-        });
+        // socket.current.on("shell-output", (data) => {
+        //     term.write(data);
+        // });
+
+        // term.onData((data) => {
+        //     console.log(data);
+        //     socket.current.emit("shell-input", data)
+        // });
 
         return () => {
             term.dispose();
-            socket.current.disconnet();
+            // socket.current.disconnet();
         }
-    }, [projectIdFromUrl]);
+    }, [projectIdFromUrl, terminalSocket]);
     
     return(
         <div
