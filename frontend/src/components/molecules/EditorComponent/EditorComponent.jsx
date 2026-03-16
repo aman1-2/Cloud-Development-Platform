@@ -53,7 +53,7 @@ export const EditorComponent = () => {
             {
                 editorState.theme &&
                 <Editor 
-                    height={'80vh'}
+                    height={'75vh'}
                     width={'100%'}
                     defaultLanguage={undefined}
                     language={extensionToFileType[activeFileTab?.extension]}

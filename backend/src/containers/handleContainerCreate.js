@@ -13,12 +13,28 @@ const docker = new Docker();
 export const handleContainerCreate = async (projectId, terminalSocket, req, tcpSocket, head) => {
     console.log("Project Id recieved for Container Create:", projectId);
     try {
+        // Delete any existing container running with same name
+        const existingContainer = await docker.listContainers({
+            name: projectId
+        });
+
+        console.log("Existing container", existingContainer);
+
+        if(existingContainer.length > 0) {
+            console.log("Container already exists, stopping and removing it");
+            const container = docker.getContainer(existingContainer[0].Id);
+            await container.remove({force: true});
+        }
+
+        console.log("Creating a new container");
+
         const container = await docker.createContainer({
             Image: 'code', // Name given by us for the written dockerfile
             AttachStdin: true,
             AttachStdout: true,
             AttachStderr: true,
             Cmd: ['/bin/bash'],
+            name: projectId,
             Tty: true,
             User: 'code',
             ExposedPorts: {
@@ -80,9 +96,11 @@ export const handleContainerCreate = async (projectId, terminalSocket, req, tcpS
         // });
 
         // Upgrading the connection to web-socket
-        terminalSocket.handleUpgrade(req, tcpSocket, head, (eastablishedWebSocketConnection) => {
-            terminalSocket.emit("connection", eastablishedWebSocketConnection, req, container);
-        });
+        // terminalSocket.handleUpgrade(req, tcpSocket, head, (eastablishedWebSocketConnection) => {
+        //     terminalSocket.emit("connection", eastablishedWebSocketConnection, req, container);
+        // });
+
+        return container;
 
     } catch (error) {
        console.log("Error while creating the container", error); 
@@ -109,5 +127,21 @@ export const handleContainerCreate = async (projectId, terminalSocket, req, tcpS
 //         socket.emit("shell-output", "Stream Error");
 //     });
 
-
 // }
+
+export async function getContainerPort(containerName) {
+    const container = await docker.listContainers({
+        name: containerName
+    });
+
+    if(container.length > 0) {
+        const containerInfo = await docker.getContainer(container[0].Id).inspect();
+        console.log("container info", containerInfo);
+        try {
+            return containerInfo.NetworkSettings.Ports["5173/tcp"][0].HostPort;
+        } catch (error) {
+            console.log("Port not present", error);
+            return undefined;
+        }
+    }
+}
