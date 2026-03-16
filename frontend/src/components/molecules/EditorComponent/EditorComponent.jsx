@@ -26,11 +26,6 @@ export const EditorComponent = () => {
         monaco.editor.setTheme('dracula');
     };
 
-    // editorSocket?.on("readFileSuccess", (data) => {
-    //     console.log("Read File Success", data);
-    //     setActiveFileTab(data.path, data.value, )
-    // });
-
     function handleChange(value) {
         //Rebouncing - Clear Old Timmer
         if(timmerId != null)    clearTimeout(timmerId);
@@ -56,7 +51,7 @@ export const EditorComponent = () => {
                     height={'75vh'}
                     width={'100%'}
                     defaultLanguage={undefined}
-                    language={extensionToFileType[activeFileTab?.extension]}
+                    language={extensionToFileType(activeFileTab?.extension)}
                     defaultValue='//Welcome and Start Coding....'
                     options={{
                         fontSize: 18,

@@ -4,9 +4,9 @@ export const usePortStore = create((set) => {
     return {
         port: null,
 
-        setPort: (incomingPort) => {
+        setPort: (port) => {
             set({
-                port: incomingPort
+                port
             });
         }
     }

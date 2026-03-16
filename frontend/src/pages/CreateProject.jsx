@@ -1,75 +1,41 @@
-import { Button, Layout } from 'antd';
-import { useCreateProject } from "../hooks/apis/mutations/useCreateProject";
-import { useNavigate } from 'react-router-dom';
+import { Button, Col, Flex, Row } from "antd";
+import { useCreateProject } from "../hooks/apis/mutations/useCreateProject"
+import { useNavigate } from "react-router-dom";
 
-const headerStyle = {
-    textAlign: 'center',
-    color: '#fff',
-    height: 64,
-    paddingInline: 48,
-    lineHeight: '64px',
-    backgroundColor: '#4096ff',
-};
+  
+export const CreateProject = () => {
 
-const contentStyle = {
-  textAlign: 'center',
-  minHeight: 120,
-  lineHeight: '120px',
-  color: '#fff',
-  backgroundColor: '#0958d9',
-};
-
-const footerStyle = {
-  textAlign: 'center',
-  color: '#fff',
-  backgroundColor: '#4096ff',
-};
-
-const layoutStyle = {
-    borderRadius: 8,
-    overflow: 'hidden',
-    width: 'calc(50% - 8px)',
-    maxWidth: 'calc(50% - 8px)',
-};
-
-export const CreateProject = () =>{
-
-    const {Header, Footer, Content} = Layout;
-
-    const { createProjectMutation, isPending } = useCreateProject();
+    const { createProjectMutation } = useCreateProject();
 
     const navigate = useNavigate();
 
     async function handleCreateProject() {
-        console.log("Going to trigger the api.");
+        console.log("Going to trigger the api");
         try {
             const response = await createProjectMutation();
-            console.log("Now we should be re-directed to the editor.")
-            navigate(`project/${response.data}`)
-        } catch (error) {
-            console.log(error);
-            throw error;
+            console.log("Now we should redirect to the editor");
+            navigate(`/project/${response.data}`)
+        } catch(error) {
+            console.log("Error creating project", error);
         }
     }
 
     return (
-        <Layout style={layoutStyle}>
-            <Header style={headerStyle}>
-                <h1>
-                    Create Project
-                </h1>
-            </Header>
-            <Content style={contentStyle}>
-                <Button
-                    onClick={handleCreateProject}
-                    loading={isPending}
-                >
-                    Create Project
-                </Button>
-            </Content>
-            <Footer style={footerStyle}>
-                Footer
-            </Footer>
-        </Layout>
-    );
+        
+        <Row>
+         
+            <Col span={24} >
+                <Flex justify="center" align="center">
+                    <Button
+                            type="primary"
+                            onClick={handleCreateProject}
+                    >
+                        Create Playground
+                    </Button>
+                </Flex>
+            </Col>
+            
+        </Row>
+            
+    )
 }

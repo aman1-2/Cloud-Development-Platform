@@ -24,41 +24,17 @@ const webSocketForTerminal = new WebSocketServer({
     server
 });
 
-webSocketForTerminal.on("connection", async (ws, req, container) => {
+webSocketForTerminal.on("connection", async (ws, req) => {
     console.log("Terminal Connected");
-    // console.log(ws, req, container);
 
     const isTerminal = req.url.includes("/terminal");
 
     if(isTerminal) {
-        console.log(req.url);
-        
         const projectId = req.url.split("=")[1];
-
         console.log("Project Id received after connection: ", projectId);
         
         const container = await handleContainerCreate(projectId, webSocketForTerminal);
 
         handleTerminalCreation(container, ws);
     }
-
-    // ws.on("close", () => {
-    //     container.remove({ force: true}, (err, data) => {
-    //         if(err) {
-    //             console.log("Error while removing container", err);
-    //         } else {
-    //             console.log("Container Removed", data);
-    //         }
-    //     });
-    // });
 });
-
-// server.on("upgrade", (req, tcpSocket, head) => {
-//     /**
-//      * req: Incoming Http request
-//      * socket: TCP socket (Which will be upgraded)
-//      * head: Had meta-data around upgrading the connection.
-//      */
-//     // This callback will be called when a client tries to connect to the server through websocket
-
-// });

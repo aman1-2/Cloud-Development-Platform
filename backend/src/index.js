@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import { Server } from 'socket.io';
 import { createServer } from 'node:http';
-// import path from 'path';
 import chokidar from 'chokidar';
 
 import { PORT } from './config/serverConfig.js';
@@ -60,37 +59,8 @@ editorNamespace.on("connection", (socket) => {
         });
     }
 
-    // socket.on("getPort", () => {
-    //     console.log("getPort event received.")
-    //     listContainer();
-    // });
-
     handleEditorSocketEvents(socket, editorNamespace);
-
-    socket.on("disconnect", async () => {
-        await watcher.close();
-        console.log("Editor Disconnected.");
-    });
 });
-
-const terminalNamespace = io.of('/terminal')
-
-// terminalNamespace.on("connection", (socket) => {
-//     console.log("Terminal Connected");
-
-//     let projectId = socket.handshake.query['projectId']
-
-//     // socket.on("shell-input", (data) => {
-//     //     console.log("Input Recieved:", data);
-//     //     terminalNamespace.emit("shell-output", data);
-//     // });
-
-//     socket.on("disconnect", () => {
-//         console.log("Terminal Connected.");
-//     });
-
-//     handleContainerCreate(projectId, socket);
-// });
 
 server.listen(PORT, () => {
     console.log(`Server Started at Port:${PORT}`);

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { IoIosArrowForward } from "react-icons/io";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowForward,IoIosArrowDown } from "react-icons/io";
 import { FileIcon } from "../../atoms/FileIcon/FileIcon";
 
 import { useEditorSocketStore } from "../../../store/editorSocketStore";

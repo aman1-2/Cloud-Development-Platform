@@ -18,11 +18,11 @@ export const useFileContextMenuStore = create((set) => ({
     setIsOpen: (incomingIsOpen) => {
         set({
             isOpen: incomingIsOpen
-        })
+        });
     },
     setFile: (incomingFile) => {
         set({
             file: incomingFile
-        })
+        });
     }
 })); 

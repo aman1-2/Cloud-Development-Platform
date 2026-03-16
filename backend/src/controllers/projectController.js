@@ -17,5 +17,5 @@ export const getProjectTreeController = async (req, res) => {
         data: tree,
         success: true,
         message: "Successfully fetched the Tree."
-    })
+    });
 }

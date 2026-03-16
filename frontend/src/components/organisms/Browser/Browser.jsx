@@ -19,7 +19,7 @@ export const Browser = ({ projectId }) => {
                 containerName: projectId
             });
         }
-    },[port, editorSocket, projectId]);
+    },[port, editorSocket]);
 
     if(!port) {
         return <div> Loading.... </div>

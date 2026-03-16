@@ -111,7 +111,6 @@ export const ProjectPlayground = () => {
             
             {/* <EditorButton isActive={false} />
             <EditorButton isActive={true} /> */}
-
             
         </>
     );

@@ -1,4 +1,5 @@
 import './FileContextMenu.css';
+
 import { useFileContextMenuStore } from "../../../store/fileContextMenuStore";
 import { useEditorSocketStore } from '../../../store/editorSocketStore';
 
@@ -17,13 +18,11 @@ export const FileContextMenu = ({ x, y, path}) => {
         <>
             <div
                 className='fileContextOptionsWrapper'
-
                 style={{
                     left: x,
                     top: y,
                     border: "1.5px solid black"
                 }}
-
                 onMouseLeave={() => {
                     setIsOpen(false);
                 }}

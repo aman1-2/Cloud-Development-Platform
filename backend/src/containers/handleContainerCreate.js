@@ -1,16 +1,15 @@
 import Docker from 'dockerode';
-import { start } from 'node:repl';
-
-export const listContainer = async() => {
-    const container = await docker.listContainers();
-    console.log("Containers", container);
-    //Print ports array from all container
-    container.forEach((containerInfo) => console.log(containerInfo.Ports));
-}
 
 const docker = new Docker();
 
-export const handleContainerCreate = async (projectId, terminalSocket, req, tcpSocket, head) => {
+export const listContainer = async() => {
+    const containers = await docker.listContainers();
+    console.log("Containers", containers);
+    //Print ports array from all container
+    containers.forEach((containerInfo) => console.log(containerInfo.Ports));
+}
+
+export const handleContainerCreate = async (projectId) => {
     console.log("Project Id recieved for Container Create:", projectId);
     try {
         // Delete any existing container running with same name
@@ -37,6 +36,9 @@ export const handleContainerCreate = async (projectId, terminalSocket, req, tcpS
             name: projectId,
             Tty: true,
             User: 'code',
+            Volumes: {
+                "/home/code/app": {}
+            },
             ExposedPorts: {
                 "5173/tcp": {}
             },
@@ -61,73 +63,11 @@ export const handleContainerCreate = async (projectId, terminalSocket, req, tcpS
 
         console.log("Container Started");
 
-        // container.exec({
-        //     Cmd: ["/bin/bash"],
-        //     User: "code",
-        //     AttachStdin: true,
-        //     AttachStdout: true,
-        //     AttachStderr: true,
-        // }, (err, exec) => {
-        //     if(err) {
-        //         console.log("Error while creating exec", err);
-        //         return;
-        //     }
-
-        //     exec.start({ hijack: true}, (err, stream) => {
-        //         if(err) {
-        //             console.log("Error while starting exec", err);
-        //             return;
-        //         }
-
-        //         // processStream(stream, socket);
-
-        //         // socket.on("shell-input", (data) => {
-        //         //     console.log("Received from frontend", data);
-        //         //     stream.write("pwd\n", (err) => {
-        //         //         if(err) {
-        //         //             console.log("Error while writing to stream", err);
-        //         //         } else {
-        //         //             console.log("Data written on stream");
-        //         //         }
-        //         //     });
-        //         // });
-
-        //     });
-        // });
-
-        // Upgrading the connection to web-socket
-        // terminalSocket.handleUpgrade(req, tcpSocket, head, (eastablishedWebSocketConnection) => {
-        //     terminalSocket.emit("connection", eastablishedWebSocketConnection, req, container);
-        // });
-
         return container;
-
     } catch (error) {
        console.log("Error while creating the container", error); 
     }
 }
-
-// Updating socket.io connection with raw socket connection therefore there will be update in the processStream function as well.
-// function processStream(stream, socket) {
-//     let buffer = Buffer.from("");
-
-//     stream.on("data", (data) => {
-//         buffer = Buffer.concat([buffer, data]);
-//         socket.emit("shell-output", buffer.toString());
-//         buffer = Buffer.from("");
-//     });
-
-//     stream.on("end", () => {
-//         console.log("Stream Ended");
-//         socket.emit("shell-output", "Stream Ended");
-//     });
-
-//     stream.on("error", (err) => {
-//         console.log("Stream Error", err);
-//         socket.emit("shell-output", "Stream Error");
-//     });
-
-// }
 
 export async function getContainerPort(containerName) {
     const container = await docker.listContainers({

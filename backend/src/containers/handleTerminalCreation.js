@@ -14,7 +14,8 @@ export const handleTerminalCreation = (container, ws) => {
 
         exec.start({ hijack: true }, (err, stream) => {
             if(err) {
-                console.log("Error while starting the exec.")
+                console.log("Error while starting the exec.", err);
+                return;
             }
 
             // STEP:1 Parse/Process the stream
@@ -22,13 +23,13 @@ export const handleTerminalCreation = (container, ws) => {
 
             // STEP:2 Stream Writing
             ws.on("message", (data) => {
-                // if(data == "getPort") {
-                //     container.inspect((err, data) => {
-                //         const port = data.NetworkSettings;
-                //         console.log(port);
-                //     });
-                //     return;
-                // }
+                if(data === "getPort") {
+                    container.inspect((err, data) => {
+                        const port = data.NetworkSettings;
+                        console.log(port);
+                    });
+                    return;
+                }
                 stream.write(data);
             });
         });

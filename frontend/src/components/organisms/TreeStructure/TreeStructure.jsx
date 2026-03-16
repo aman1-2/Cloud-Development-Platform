@@ -43,6 +43,7 @@ export const TreeStructure = () => {
             {isFolderContextOpen && folderContextX && folderContextY && (
                 <FolderContextMenu x={folderContextX} y={folderContextY} path={folder} />
             )}
+            
             <TreeNode fileFolderData = {treeStructure} />
         </>
     );
